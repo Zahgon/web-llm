@@ -210,7 +210,7 @@ export function findModelRecord(
   appConfig: AppConfig,
 ): ModelRecord {
   const matchedItem = appConfig.model_list.find(
-    (item) => item.model_id == modelId,
+    (item) => { throw new Error("STUB"); },
   );
   if (matchedItem !== undefined) return matchedItem;
   throw new ModelNotFoundError(modelId);
@@ -386,7 +386,7 @@ export class CustomLock {
       // Otherwise, push the request to the queue, and
       // a future release() will resolve it
       return new Promise<void>((resolve) => {
-        this.queue.push(resolve);
+          throw new Error("STUB");
       });
     }
   }
@@ -405,8 +405,7 @@ export class CustomLock {
     // the lock is still acquired
     const cont = this.queue.shift();
     return new Promise((res: Cont) => {
-      cont!();
-      res();
+        throw new Error("STUB");
     });
   }
 }

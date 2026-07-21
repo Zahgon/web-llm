@@ -43,32 +43,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
   private initRequestUuid?: string;
 
   constructor() {
-    if (!self || !("addEventListener" in self)) {
-      throw new NonWorkerEnvironmentError("ServiceWorkerMLCEngineHandler");
-    }
-    super();
-    const onmessage = this.onmessage.bind(this);
-
-    this.engine.setInitProgressCallback((report: InitProgressReport) => {
-      const msg: WorkerResponse = {
-        kind: "initProgressCallback",
-        uuid: this.initRequestUuid || "",
-        content: report,
-      };
-      this.postMessage(msg);
-    });
-
-    self.addEventListener("message", (event) => {
-      const message = event as unknown as ExtendableMessageEvent;
-      if (message.source) {
-        this.clientRegistry.set(message.data.uuid, message.source);
-      }
-      message.waitUntil(
-        new Promise((resolve, reject) => {
-          onmessage(message, resolve, reject);
-        }),
-      );
-    });
+      throw new Error("STUB");
   }
 
   postMessage(message: WorkerResponse) {
@@ -107,38 +82,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
 
     if (msg.kind === "reload") {
       this.handleTask(msg.uuid, async () => {
-        const params = msg.content as ReloadParams;
-        // If the modelId, chatOpts, and appConfig are the same, immediately return
-        if (
-          areArraysEqual(this.modelId, params.modelId) &&
-          areChatOptionsListEqual(this.chatOpts, params.chatOpts)
-        ) {
-          log.info("Already loaded the model. Skip loading");
-          const gpuDetectOutput = await tvmjs.detectGPUDevice();
-          if (gpuDetectOutput == undefined) {
-            throw Error("Cannot find WebGPU in the environment");
-          }
-          let gpuLabel = "WebGPU";
-          if (gpuDetectOutput.adapterInfo.description.length != 0) {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description;
-          } else {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor;
-          }
-          this.engine.getInitProgressCallback()?.({
-            progress: 1,
-            timeElapsed: 0,
-            text: "Finish loading on " + gpuLabel,
-          });
-          onComplete?.(null);
-          return null;
-        }
-
-        this.initRequestUuid = msg.uuid;
-        await this.engine.reload(params.modelId, params.chatOpts);
-        this.modelId = params.modelId;
-        this.chatOpts = params.chatOpts;
-        onComplete?.(null);
-        return null;
+          throw new Error("STUB");
       });
       return;
     }
@@ -150,7 +94,9 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
 
 /* Webapp Client */
 export class ServiceWorker implements ChatWorker {
-  _onmessage: (event: MessageEvent) => void = () => {};
+  _onmessage: (event: MessageEvent) => void = () => {
+      throw new Error("STUB");
+  };
 
   get onmessage() {
     return this._onmessage;
@@ -219,17 +165,7 @@ export class ServiceWorkerMLCEngine extends WebWorkerMLCEngine {
   missedHeartbeat = 0;
 
   constructor(engineConfig?: MLCEngineConfig, keepAliveMs = 10000) {
-    if (!("serviceWorker" in navigator)) {
-      throw new NoServiceWorkerAPIError();
-    }
-    super(new ServiceWorker(), engineConfig);
-
-    // Keep alive through periodical heartbeat signals
-    setInterval(() => {
-      this.worker.postMessage({ kind: "keepAlive", uuid: crypto.randomUUID() });
-      this.missedHeartbeat += 1;
-      log.trace("missedHeartbeat", this.missedHeartbeat);
-    }, keepAliveMs);
+      throw new Error("STUB");
   }
 
   onmessage(event: any): void {

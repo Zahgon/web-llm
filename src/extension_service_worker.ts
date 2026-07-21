@@ -35,9 +35,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
   port: chrome.runtime.Port | null;
 
   constructor(port: chrome.runtime.Port) {
-    super();
-    this.port = port;
-    port.onDisconnect.addListener(() => this.onPortDisconnect(port));
+      throw new Error("STUB");
   }
 
   postMessage(msg: any) {
@@ -46,7 +44,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
 
   setPort(port: chrome.runtime.Port) {
     this.port = port;
-    port.onDisconnect.addListener(() => this.onPortDisconnect(port));
+    port.onDisconnect.addListener(() => { throw new Error("STUB"); });
   }
 
   onPortDisconnect(port: chrome.runtime.Port) {
@@ -63,35 +61,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
     const msg = event as WorkerRequest;
     if (msg.kind === "reload") {
       this.handleTask(msg.uuid, async () => {
-        const params = msg.content as ReloadParams;
-        // If the modelId, chatOpts, and appConfig are the same, immediately return
-        if (
-          areArraysEqual(this.modelId, params.modelId) &&
-          areChatOptionsListEqual(this.chatOpts, params.chatOpts)
-        ) {
-          log.info("Already loaded the model. Skip loading");
-          const gpuDetectOutput = await tvmjs.detectGPUDevice();
-          if (gpuDetectOutput == undefined) {
-            throw new WebGPUNotFoundError();
-          }
-          let gpuLabel = "WebGPU";
-          if (gpuDetectOutput.adapterInfo.description.length != 0) {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description;
-          } else {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor;
-          }
-          this.engine.getInitProgressCallback()?.({
-            progress: 1,
-            timeElapsed: 0,
-            text: "Finish loading on " + gpuLabel,
-          });
-          return null;
-        }
-
-        await this.engine.reload(params.modelId, params.chatOpts);
-        this.modelId = params.modelId;
-        this.chatOpts = params.chatOpts;
-        return null;
+          throw new Error("STUB");
       });
       return;
     }
@@ -134,15 +104,12 @@ class PortAdapter implements ChatWorker {
   private _onmessage!: (message: any) => void;
 
   constructor(port: chrome.runtime.Port) {
-    this.port = port;
-    this.port.onMessage.addListener(this.handleMessage.bind(this));
+      throw new Error("STUB");
   }
 
   // Wrapper to handle incoming messages and delegate to onmessage if available
   private handleMessage(message: any) {
-    if (this._onmessage) {
-      this._onmessage(message);
-    }
+      throw new Error("STUB");
   }
 
   // Getter and setter for onmessage to manage adding/removing listeners
@@ -168,28 +135,6 @@ export class ServiceWorkerMLCEngine extends WebWorkerMLCEngine {
   extensionId?: string;
 
   constructor(engineConfig?: ExtensionMLCEngineConfig, keepAliveMs = 10000) {
-    const extensionId = engineConfig?.extensionId;
-    const onDisconnect = engineConfig?.onDisconnect;
-    const port = extensionId
-      ? chrome.runtime.connect(extensionId, {
-          name: "web_llm_service_worker",
-        })
-      : chrome.runtime.connect({ name: "web_llm_service_worker" });
-    const chatWorker = new PortAdapter(port);
-    super(chatWorker, engineConfig);
-    this.port = port;
-    this.extensionId = extensionId;
-
-    // Keep alive through periodical heartbeat signals
-    const keepAliveTimer = setInterval(() => {
-      this.worker.postMessage({ kind: "keepAlive" });
-    }, keepAliveMs);
-
-    port.onDisconnect.addListener(() => {
-      clearInterval(keepAliveTimer);
-      if (onDisconnect) {
-        onDisconnect();
-      }
-    });
+      throw new Error("STUB");
   }
 }

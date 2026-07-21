@@ -198,12 +198,7 @@ export class Conversation {
         const curMessageList: Array<string | ImageURL> = [role_prefix];
         const modelType = config?.model_type ?? "";
         imageContentParts.forEach((curImage: ImageURL) => {
-          if (modelType === "phi3_v") {
-            curMessageList.push(curImage);
-            curMessageList.push("\n");
-          } else {
-            curMessageList.push(curImage);
-          }
+            throw new Error("STUB");
         });
         curMessageList.push(
           message_str + this.config.seps[i % this.config.seps.length],
@@ -526,43 +521,5 @@ export function getConversationFromChatCompletionRequest(
  * @returns The string used to set Conversation.function_string
  */
 export function getFunctionCallUsage(request: ChatCompletionRequest): string {
-  if (
-    request.tools == undefined ||
-    (typeof request.tool_choice == "string" && request.tool_choice == "none")
-  ) {
-    return "";
-  }
-  if (
-    typeof request.tool_choice == "string" &&
-    request.tool_choice !== "auto"
-  ) {
-    throw new InvalidToolChoiceError(request.tool_choice);
-  }
-  if (
-    typeof request.tool_choice !== "string" &&
-    request.tool_choice?.type !== "function"
-  ) {
-    throw new UnsupportedToolChoiceTypeError();
-  }
-
-  const singleFunctionToCall =
-    typeof request.tool_choice !== "string" &&
-    request.tool_choice?.function?.name;
-  if (singleFunctionToCall) {
-    for (const f of request.tools) {
-      if (singleFunctionToCall == f.function.name) {
-        return JSON.stringify([f.function]);
-      }
-    }
-    throw new FunctionNotFoundError(singleFunctionToCall);
-  }
-
-  const function_list = [];
-  for (const f of request.tools) {
-    if (f.type !== "function") {
-      throw new UnsupportedToolTypeError();
-    }
-    function_list.push(f.function);
-  }
-  return JSON.stringify(function_list);
+    throw new Error("STUB");
 }

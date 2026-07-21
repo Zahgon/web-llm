@@ -82,19 +82,7 @@ export class WebWorkerMLCEngineHandler {
    * @param engine A concrete implementation of MLCEngineInterface
    */
   constructor() {
-    this.engine = new MLCEngine();
-    this.loadedModelIdToAsyncGenerator = new Map<
-      string,
-      AsyncGenerator<ChatCompletionChunk | Completion, void, void>
-    >();
-    this.engine.setInitProgressCallback((report: InitProgressReport) => {
-      const msg: WorkerResponse = {
-        kind: "initProgressCallback",
-        uuid: "",
-        content: report,
-      };
-      this.postMessage(msg);
-    });
+      throw new Error("STUB");
   }
 
   postMessage(msg: any) {
@@ -145,25 +133,13 @@ export class WebWorkerMLCEngineHandler {
     switch (msg.kind) {
       case "reload": {
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as ReloadParams;
-          await this.engine.reload(params.modelId, params.chatOpts);
-          this.modelId = params.modelId;
-          this.chatOpts = params.chatOpts;
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
       case "forwardTokensAndSample": {
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as ForwardTokensAndSampleParams;
-          const res = await this.engine.forwardTokensAndSample(
-            params.inputIds,
-            params.isPrefill,
-            params.modelId,
-          );
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
@@ -171,30 +147,14 @@ export class WebWorkerMLCEngineHandler {
       case "chatCompletionNonStreaming": {
         // Directly return the ChatCompletion response
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as ChatCompletionNonStreamingParams;
-          await this.reloadIfUnmatched(params.modelId, params.chatOpts);
-          const res = await this.engine.chatCompletion(params.request);
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "chatCompletionStreamInit": {
         // One-time set up that instantiates the chunk generator in worker
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as ChatCompletionStreamInitParams;
-          // Also ensures params.selectedModelId will match what this.engine selects
-          await this.reloadIfUnmatched(params.modelId, params.chatOpts);
-          // Register new async generator for this new request of the model
-          const curGenerator = (await this.engine.chatCompletion(
-            params.request,
-          )) as AsyncGenerator<ChatCompletionChunk, void, void>;
-          this.loadedModelIdToAsyncGenerator.set(
-            params.selectedModelId,
-            curGenerator,
-          );
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
@@ -202,30 +162,14 @@ export class WebWorkerMLCEngineHandler {
       case "completionNonStreaming": {
         // Directly return the ChatCompletion response
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as CompletionNonStreamingParams;
-          await this.reloadIfUnmatched(params.modelId, params.chatOpts);
-          const res = await this.engine.completion(params.request);
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "completionStreamInit": {
         // One-time set up that instantiates the chunk generator in worker
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as CompletionStreamInitParams;
-          // Also ensures params.selectedModelId will match what this.engine selects
-          await this.reloadIfUnmatched(params.modelId, params.chatOpts);
-          // Register new async generator for this new request of the model
-          const curGenerator = (await this.engine.completion(
-            params.request,
-          )) as AsyncGenerator<Completion, void, void>;
-          this.loadedModelIdToAsyncGenerator.set(
-            params.selectedModelId,
-            curGenerator,
-          );
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
@@ -234,19 +178,7 @@ export class WebWorkerMLCEngineHandler {
         // Note: ChatCompletion and Completion share the same chunk generator.
         // For any subsequent request, we return whatever `next()` yields
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as CompletionStreamNextChunkParams;
-          const curGenerator = this.loadedModelIdToAsyncGenerator.get(
-            params.selectedModelId,
-          );
-          if (curGenerator === undefined) {
-            throw Error(
-              "InternalError: Chunk generator in worker should be instantiated by now.",
-            );
-          }
-          // Yield the next chunk
-          const { value } = await curGenerator.next();
-          onComplete?.(value);
-          return value;
+            throw new Error("STUB");
         });
         return;
       }
@@ -254,77 +186,50 @@ export class WebWorkerMLCEngineHandler {
       case "embedding": {
         // Directly return the Embeddings response
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as EmbeddingParams;
-          await this.reloadIfUnmatched(params.modelId, params.chatOpts);
-          const res = await this.engine.embedding(params.request);
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "runtimeStatsText": {
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as RuntimeStatsTextParams;
-          const res = await this.engine.runtimeStatsText(params.modelId);
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "interruptGenerate": {
         this.handleTask(msg.uuid, async () => {
-          this.engine.interruptGenerate();
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
       case "unload": {
         // Unset modelId and chatOpts since backend unloads the model
         this.handleTask(msg.uuid, async () => {
-          await this.engine.unload();
-          this.modelId = undefined;
-          this.chatOpts = undefined;
-          // This may not be cleaned properly when one asyncGenerator finishes.
-          // We only clear at unload(), which may not be called upon reload().
-          // However, service_worker may skip reload(). Will leave as is for now.
-          this.loadedModelIdToAsyncGenerator.clear();
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
       case "resetChat": {
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as ResetChatParams;
-          await this.engine.resetChat(params.keepStats, params.modelId);
-          onComplete?.(null);
-          return null;
+            throw new Error("STUB");
         });
         return;
       }
       case "getMaxStorageBufferBindingSize": {
         this.handleTask(msg.uuid, async () => {
-          const res = await this.engine.getMaxStorageBufferBindingSize();
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "getGPUVendor": {
         this.handleTask(msg.uuid, async () => {
-          const res = await this.engine.getGPUVendor();
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
       case "getMessage": {
         this.handleTask(msg.uuid, async () => {
-          const params = msg.content as GetMessageParams;
-          const res = await this.engine.getMessage(params.modelId);
-          onComplete?.(res);
-          return res;
+            throw new Error("STUB");
         });
         return;
       }
@@ -441,29 +346,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
   private pendingPromise = new Map<string, (msg: WorkerResponse) => void>();
 
   constructor(worker: ChatWorker, engineConfig?: MLCEngineConfig) {
-    this.worker = worker;
-    worker.onmessage = (event: any) => {
-      this.onmessage.bind(this)(event);
-    };
-
-    if (engineConfig?.appConfig) {
-      this.setAppConfig(engineConfig?.appConfig);
-    }
-    if (engineConfig?.logLevel) {
-      this.setLogLevel(engineConfig?.logLevel);
-    }
-    this.setInitProgressCallback(engineConfig?.initProgressCallback);
-    if (engineConfig?.logitProcessorRegistry) {
-      if (engineConfig?.logitProcessorRegistry) {
-        log.warn(
-          "Warning: The `logitProcessorRegistry` property in `engineConfig` will be ignored when using the WebWorkerMLCEngine constructor. To set `logitProcessorRegistry`, use the engine constructor within the worker script instead.",
-        );
-      }
-    }
-
-    this.chat = new API.Chat(this);
-    this.completions = new API.Completions(this);
-    this.embeddings = new API.Embeddings(this);
+      throw new Error("STUB");
   }
 
   setInitProgressCallback(initProgressCallback?: InitProgressCallback) {
@@ -501,18 +384,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
       resolve: (arg: T) => void,
       reject: (arg: any) => void,
     ) => {
-      const cb = (msg: WorkerResponse) => {
-        if (msg.kind == "return") {
-          resolve(msg.content as T);
-        } else {
-          if (msg.kind != "throw") {
-            reject("Uknown msg kind " + msg.kind);
-          } else {
-            reject(msg.content);
-          }
-        }
-      };
-      this.pendingPromise.set(uuid, cb);
+        throw new Error("STUB");
     };
     const promise = new Promise<T>(executor);
     this.worker.postMessage(msg);

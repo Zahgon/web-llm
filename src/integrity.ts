@@ -146,5 +146,5 @@ export async function verifyIntegrity(
  * @returns `true` if `sri` matches the SRI format.
  */
 export function isValidSRI(sri: string): boolean {
-  return parseSRI(sri) !== null;
+    throw new Error("STUB");
 }

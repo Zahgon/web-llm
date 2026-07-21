@@ -33,74 +33,14 @@ export function areModelRecordsEqual(
   record1: ModelRecord,
   record2: ModelRecord,
 ): boolean {
-  // Compare primitive fields
-  if (
-    record1.model !== record2.model ||
-    record1.model_id !== record2.model_id ||
-    record1.model_lib !== record2.model_lib ||
-    record1.vram_required_MB !== record2.vram_required_MB ||
-    record1.low_resource_required !== record2.low_resource_required ||
-    record1.buffer_size_required_bytes !== record2.buffer_size_required_bytes
-  ) {
-    return false;
-  }
-
-  // Compare required_features arrays
-  if (
-    (record1.required_features && !record2.required_features) ||
-    (!record1.required_features && record2.required_features)
-  ) {
-    return false;
-  }
-
-  if (record1.required_features && record2.required_features) {
-    if (record1.required_features.length !== record2.required_features.length) {
-      return false;
-    }
-
-    for (let i = 0; i < record1.required_features.length; i++) {
-      if (record1.required_features[i] !== record2.required_features[i]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
+    throw new Error("STUB");
 }
 
 export function areAppConfigsEqual(
   config1?: AppConfig,
   config2?: AppConfig,
 ): boolean {
-  if (config1 === undefined || config2 === undefined) {
-    return config1 === config2;
-  }
-
-  // Check if both configurations have the same cache backend
-  if (getCacheBackend(config1) !== getCacheBackend(config2)) {
-    return false;
-  }
-  if (
-    getCacheBackend(config1) === "opfs" &&
-    (config1.opfsAccessMode ?? "async") !== (config2.opfsAccessMode ?? "async")
-  ) {
-    return false;
-  }
-
-  // Check if both configurations have the same number of model records
-  if (config1.model_list.length !== config2.model_list.length) {
-    return false;
-  }
-
-  // Compare each ModelRecord in the model_list
-  for (let i = 0; i < config1.model_list.length; i++) {
-    if (!areModelRecordsEqual(config1.model_list[i], config2.model_list[i])) {
-      return false;
-    }
-  }
-
-  // If all checks passed, the configurations are equal
-  return true;
+    throw new Error("STUB");
 }
 
 export function areChatOptionsEqual(

@@ -148,21 +148,7 @@ export class MLCEngine implements MLCEngineInterface {
   private reloadController: AbortController | undefined;
 
   constructor(engineConfig?: MLCEngineConfig) {
-    this.loadedModelIdToPipeline = new Map<
-      string,
-      LLMChatPipeline | EmbeddingPipeline
-    >();
-    this.loadedModelIdToChatConfig = new Map<string, ChatConfig>();
-    this.loadedModelIdToModelType = new Map<string, ModelType>();
-    this.loadedModelIdToLock = new Map<string, CustomLock>();
-    this.appConfig = engineConfig?.appConfig || prebuiltAppConfig;
-    this.setLogLevel(engineConfig?.logLevel || DefaultLogLevel);
-    this.setInitProgressCallback(engineConfig?.initProgressCallback);
-    this.setLogitProcessorRegistry(engineConfig?.logitProcessorRegistry);
-
-    this.chat = new API.Chat(this);
-    this.completions = new API.Completions(this);
-    this.embeddings = new API.Embeddings(this);
+      throw new Error("STUB");
   }
 
   //-----------------------
@@ -373,14 +359,7 @@ export class MLCEngine implements MLCEngineInterface {
     // triggered outside of `reload()`. TODO: does this cause unexpected behavior?
     let deviceLostInReload = false;
     gpuDetectOutput.device.lost.then((info: any) => {
-      if (this.deviceLostIsError) {
-        log.error(
-          `Device was lost. This can happen due to insufficient memory or other GPU constraints. ` +
-            `Detailed error: ${info}. Please try to reload WebLLM with a less resource-intensive model.`,
-        );
-        this.unload();
-        deviceLostInReload = true;
-      }
+        throw new Error("STUB");
     });
     tvm.initWebGPU(gpuDetectOutput.device);
 

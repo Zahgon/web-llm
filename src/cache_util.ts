@@ -58,7 +58,7 @@ async function maybeVerifyTokenizerIntegrity(
 
 function findModelRecord(modelId: string, appConfig?: AppConfig): ModelRecord {
   const matchedItem = appConfig?.model_list.find(
-    (item) => item.model_id == modelId,
+    (item) => { throw new Error("STUB"); },
   );
   if (matchedItem !== undefined) {
     return matchedItem;

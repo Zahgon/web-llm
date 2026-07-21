@@ -349,33 +349,5 @@ export function postInitAndCheckFields(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   currentModelId: string,
 ): void {
-  // 1. Check unsupported fields in request
-  const unsupported: Array<string> = [];
-  CompletionCreateParamsUnsupportedFields.forEach((field) => {
-    if (field in request) {
-      unsupported.push(field);
-    }
-  });
-  if (unsupported.length > 0) {
-    throw new UnsupportedFieldsError(unsupported, "CompletionCreateParams");
-  }
-
-  // 2. If streaming, n cannot be > 1, since we cannot manage multiple sequences at once
-  if (request.stream && request.n && request.n > 1) {
-    throw new StreamingCountError();
-  }
-
-  // 3. Seed should be an integer
-  if (request.seed !== undefined && request.seed !== null) {
-    if (!Number.isInteger(request.seed)) {
-      throw new SeedTypeError(request.seed);
-    }
-  }
-
-  // 4. Only set stream_options when streaming
-  if (request.stream_options !== undefined && request.stream_options !== null) {
-    if (!request.stream) {
-      throw new InvalidStreamOptionsError();
-    }
-  }
+    throw new Error("STUB");
 }

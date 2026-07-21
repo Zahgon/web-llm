@@ -212,7 +212,7 @@ export class ToolCallOutputInvalidTypeError extends Error {
 export class ToolCallOutputMissingFieldsError extends Error {
   constructor(missingFields: string[], object: any) {
     super(
-      `Expect generated tool call to have fields ${missingFields.map((field) => `"\`${field}\`"`).join(", ")}, but got object: ${JSON.stringify(object)}`,
+      `Expect generated tool call to have fields ${missingFields.map((field) => { throw new Error("STUB"); }).join(", ")}, but got object: ${JSON.stringify(object)}`,
     );
     this.name = "JSONFieldError";
   }

@@ -161,38 +161,5 @@ export function postInitAndCheckFields(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   currentModelId: string,
 ): void {
-  // 1. Check unsupported fields in request
-  const unsupported: Array<string> = [];
-  EmbeddingCreateParamsUnsupportedFields.forEach((field) => {
-    if (field in request) {
-      unsupported.push(field);
-    }
-  });
-  if (unsupported.length > 0) {
-    throw new UnsupportedFieldsError(unsupported, "EmbeddingCreateParams");
-  }
-
-  // 2. Unsupported format
-  if (request.encoding_format == "base64") {
-    throw new EmbeddingUnsupportedEncodingFormatError();
-  }
-
-  // 3. Invalid input
-  const input = request.input;
-  if (typeof input === "string") {
-    if (input === "") throw new EmbeddingInputEmptyError();
-  } else {
-    // input instanceof Array
-    if (input.length === 0) {
-      // Array<number>
-      throw new EmbeddingInputEmptyError();
-    }
-    for (let i = 0; i < input.length; i++) {
-      const curInput = input[i];
-      if (typeof curInput !== "number") {
-        // Array<string>, Array<Array<number>>
-        if (curInput.length === 0) throw new EmbeddingInputEmptyError();
-      }
-    }
-  }
+    throw new Error("STUB");
 }

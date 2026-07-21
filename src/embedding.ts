@@ -31,65 +31,7 @@ export class EmbeddingPipeline {
   private curRoundEmbedTotalTime = 0;
 
   constructor(tvm: tvmjs.Instance, tokenizer: Tokenizer, config: ChatConfig) {
-    // 0. Setting attributes
-    this.tvm = tvm;
-    this.tokenizer = tokenizer;
-    this.config = config;
-    this.device = this.tvm.webgpu();
-
-    // 1. Create VM and get the core functions
-    tvm.beginScope();
-    this.vm = this.tvm.detachFromCurrentScope(
-      this.tvm.createVirtualMachine(this.device),
-    );
-    this.prefill = this.tvm.detachFromCurrentScope(
-      this.vm.getFunction("prefill"),
-    );
-
-    // 2. Get json stored in the vm's metadata function
-    const fgetMetadata = this.vm.getFunction("_metadata");
-    const ret_value = fgetMetadata();
-    const metadataStr = ret_value.toString();
-    const metadata = JSON.parse(metadataStr);
-
-    // 3. Load parameters by name
-    const paramNames: string[] = [];
-    metadata.params.forEach((param: any) => {
-      paramNames.push(param.name);
-    });
-    this.params = this.tvm.detachFromCurrentScope(
-      this.tvm.getParamsFromCacheByName(paramNames),
-    );
-
-    // 4. Read in compilation configurations from metadata
-    // We use context window size max batch size to check validity of the model
-    // We assume prefillChunkSize is the same as contextWindowSize for embedding model for now
-    this.maxBatchSize = metadata.max_batch_size;
-    this.contextWindowSize = this.config.context_window_size;
-    this.prefillChunkSize = metadata.prefill_chunk_size;
-    log.info("Using maxBatchSize: ", this.maxBatchSize);
-    log.info("Using contextWindowSize: ", this.contextWindowSize);
-    log.info("Using prefillChunkSize: ", this.prefillChunkSize);
-
-    if (this.config.sliding_window_size !== -1) {
-      throw new EmbeddingSlidingWindowError(this.config.sliding_window_size);
-    }
-    if (this.maxBatchSize <= 0) {
-      throw new MinValueError("maxBatchSize", 0);
-    }
-    if (this.contextWindowSize <= 0) {
-      throw new MinValueError("contextWindowSize", 0);
-    }
-    if (this.prefillChunkSize <= 0) {
-      throw new MinValueError("prefillChunkSize", 0);
-    }
-    if (this.prefillChunkSize !== this.contextWindowSize) {
-      throw new EmbeddingChunkingUnsupportedError(
-        this.contextWindowSize,
-        this.prefillChunkSize,
-      );
-    }
-    tvm.endScope();
+      throw new Error("STUB");
   }
 
   async embedStep(
@@ -275,7 +217,7 @@ export class EmbeddingPipeline {
    * Get the time it took the last `embedStep()` in seconds.
    */
   getCurRoundEmbedTotalTime(): number {
-    return this.curRoundEmbedTotalTime;
+      throw new Error("STUB");
   }
 
   /**
